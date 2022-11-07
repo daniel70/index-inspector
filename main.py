@@ -7,6 +7,7 @@ import pathlib
 
 def duplicate_columns(indexes):
     exact_duplicates = []
+    overlap_duplicates = []
     almost_duplicates = []
 
     seen = set()
@@ -25,8 +26,17 @@ def duplicate_columns(indexes):
 
             seen.add(key)
             if this_value['columns'] == other_value['columns']:
-                print(f"{this_value['table_name']} has duplicate columns for {this_value['index_name']} and {other_value['index_name']}")
+                print(
+                    f"{this_value['table_name']} has duplicate columns for {this_value['index_name']} and {other_value['index_name']}")
                 exact_duplicates.append((this_key, other_key))
+                continue
+            elif this_value['columns'][:len(other_value['columns'])] == other_value['columns'] \
+                    or other_value['columns'][:len(this_value['columns'])] == this_value['columns']:
+                # overlapping means index on [col1, col2, col3, col4] overlaps index on [col1, col2]
+                # but not index on [col2, col3]
+                print(
+                    f"{this_value['table_name']} has overlapping duplicate columns for {this_value['index_name']} and {other_value['index_name']}")
+                overlap_duplicates.append((this_key, other_key))
 
     return exact_duplicates
 
