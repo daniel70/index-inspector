@@ -1,14 +1,23 @@
 import os
 from collections import defaultdict
+from enum import Enum, StrEnum
 
 import pyodbc
 import pathlib
+
+
+class Duplicate(StrEnum):
+    EXACT = 1
+    OVERLAP = 2
+    ALMOST = 3
+    INCLUDE = 4
 
 
 def duplicate_columns(indexes):
     exact_duplicates = []
     overlap_duplicates = []
     almost_duplicates = []
+    last_column_included = []
 
     seen = set()
     for this_key, this_value in indexes.items():
@@ -37,6 +46,17 @@ def duplicate_columns(indexes):
                 print(
                     f"{this_value['table_name']} has overlapping duplicate columns for {this_value['index_name']} and {other_value['index_name']}")
                 overlap_duplicates.append((this_key, other_key))
+                continue
+
+            # last_column_included finds these kind of indexes:
+            #     idx1: [col1, col2, col3] include []
+            #     idx2: [col1, col2] include [col3]
+            # idx2 is not needed here
+            elif (this_value['columns'][:len(other_value['columns']) - 1] == other_value['columns']
+                  and other_value['columns'][-1] in other_value['includes']) or \
+                    (other_value['columns'][:len(this_value['columns']) - 1] == this_value['columns']
+                     and this_value['columns'][-1] in this_value['includes']):
+                print(f"found last_column_included error")
 
     return exact_duplicates
 
