@@ -15,11 +15,6 @@ class Reason(Enum):
 
 
 @dataclass()
-class Column:
-    pass
-
-
-@dataclass()
 class Index:
     table_name: str
     index_name: str
