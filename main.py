@@ -1,10 +1,9 @@
 import os
 from collections import defaultdict
 from enum import Enum
-from dataclasses import dataclass
+from objects import Schema, Table, Column, Index, IndexColumn
 
 import pyodbc
-import pathlib
 
 
 class Reason(Enum):
@@ -14,31 +13,34 @@ class Reason(Enum):
     INCLUDE = 4
 
 
-@dataclass()
-class Column:
-    pass
+def connect_objects(schemas, tables, columns, indexes, index_columns):
+    for schema in schemas.values():
+        for table in tables.values():
+            if table.schema_id == schema.schema_id:
+                schema.tables.add(table)
+                table.schema = schema
 
+    for table in tables.values():
+        for column in columns.values():
+            if column.object_id == table.object_id:
+                table.columns.append(column)
+                column.table = table
 
-@dataclass()
-class Index:
-    table_name: str
-    index_name: str
-    type: int
-    type_desc: str
-    is_unique: bool
-    ignore_dup_key: bool
-    is_primary_key: bool
-    is_unique_constraint: bool
-    is_hypothetical: bool
-    has_filter: bool
-    columns: list[Column] | None = None
-    includes: set[Column] | None = None
+    for index in indexes.values():
+        if index.object_id in tables:
+            tables[index.object_id].indexes.add(index)
+
+    for index_column in index_columns.values():
+        index_column.name = columns[(index_column.object_id, index_column.index_id)].name
+        if (index_column.object_id, index_column.index_id) in indexes:
+            indexes[(index_column.object_id, index_column.index_id)].columns.append(index_column)
 
 
 class Inspect():
 
     def __init__(self):
         pass
+
     def __init__(self, reason: Reason, object_id_1: int, index_id_1: int, object_id_2: int, index_id_2: int):
         self.reason = reason
         self.object_id_1 = object_id_1
@@ -47,7 +49,7 @@ class Inspect():
         self.index_id_2 = index_id_2
 
     @classmethod
-    def from_dicts(cls, reason:Reason, this_index, other_index):
+    def from_dicts(cls, reason: Reason, this_index, other_index):
         pass
 
 
@@ -138,15 +140,25 @@ def main():
 
     server = os.environ['server']
     database = os.environ['database']
-    sql_dir = pathlib.Path(__file__).parent / "sql"
-    sql_indices = open(sql_dir / "indices.sql").read()
 
     conn = pyodbc.connect(f"Driver={{{driver}}};Server={server};Database={database};Trusted_Connection=yes")
     cur = conn.cursor()
-    rows = cur.execute(sql_indices).fetchall()
-    indexes = transform_indexes(rows=rows)
-    duplicates = duplicate_columns(indexes=indexes)
+
+    schemas: dict[int, Schema] = {row.schema_id: Schema(*row)
+                                  for row in cur.execute("select * from sys.schemas").fetchall()}
+    tables: dict[int, Table] = {row.object_id: Table(*row)
+                                for row in cur.execute("select * from sys.tables").fetchall()}
+    columns: dict[(int, int), Column] = {(row.object_id, row.column_id): Column(*row)
+                                         for row in cur.execute("select * from sys.columns").fetchall()}
+    indexes: dict[(int, int), Index] = {(row.object_id, row.index_id): Index(*row)
+                                        for row in cur.execute("select * from sys.indexes").fetchall()}
+    index_columns: dict[(int, int), IndexColumn] = {(row.object_id, row.index_id, row.index_column_id): IndexColumn(*row)
+                                                    for row in cur.execute("select * from sys.index_columns").fetchall()}
+
     conn.close()
+
+    connect_objects(schemas, tables, columns, indexes, index_columns)
+    pass
 
 
 if __name__ == "__main__":
