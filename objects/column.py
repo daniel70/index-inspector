@@ -37,7 +37,9 @@ class Column:
     column_encryption_key_id: int | None
     column_encryption_key_database_name: str | None
     is_hidden: bool | None
-    is_masked: bool | None
+    is_masked: bool
+    graph_type: int | None = None # SQL 2019
+    graph_type_desc: str | None = None # SQL 2019
 
     table: "Table" = None
 

@@ -104,30 +104,17 @@ def duplicate_columns(indexes):
     return exact_duplicates
 
 
-def transform_indexes(rows):
-    indexes = defaultdict(dict)
-    for row in rows:
-        key = (row.object_id, row.index_id)
-        if key not in indexes:
-            indexes[key] = {
-                'table_name': row.table_name,
-                'index_name': row.index_name,
-                'type': row.type,
-                'type_desc': row.type_desc,
-                'is_unique': row.is_unique,
-                'ignore_dup_key': row.ignore_dup_key,
-                'is_primary_key': row.is_primary_key,
-                'is_unique_constraint': row.is_unique_constraint,
-                'is_hypothetical': row.is_hypothetical,
-                'has_filter': row.has_filter,
-                'columns': list(),
-                'includes': set(),
-            }
-        if row.is_included_column == 0:
-            indexes[key]['columns'].append(row.column_id)
-        else:
-            indexes[key]['includes'].add(row.column_id)
-    return indexes
+def rows_to_dict(cur, sql):
+    """ Convert a pyodbc.Row object to a list with dictionaries.
+        Different versions of SQL Server return different results for Tables, Indexes etc.
+        In order to be flexable we need to use **kwargs to create the instances instead of *args.
+    """
+    cursor = cur.execute(sql)
+    columns = [column[0] for column in cursor.description]
+    results = []
+    for row in cursor.fetchall():
+        results.append(dict(zip(columns, row)))
+    return results
 
 
 def main():
@@ -140,20 +127,25 @@ def main():
 
     server = os.environ['server']
     database = os.environ['database']
-
-    conn = pyodbc.connect(f"Driver={{{driver}}};Server={server};Database={database};Trusted_Connection=yes")
+    app = "index-inspector"
+    conn = pyodbc.connect(f"Driver={{{driver}}};Server={server};Database={database};Trusted_Connection=yes;APP={app}")
     cur = conn.cursor()
 
-    schemas: dict[int, Schema] = {row.schema_id: Schema(*row)
-                                  for row in cur.execute("select * from sys.schemas").fetchall()}
-    tables: dict[int, Table] = {row.object_id: Table(*row)
-                                for row in cur.execute("select * from sys.tables").fetchall()}
-    columns: dict[(int, int), Column] = {(row.object_id, row.column_id): Column(*row)
-                                         for row in cur.execute("select * from sys.columns").fetchall()}
-    indexes: dict[(int, int), Index] = {(row.object_id, row.index_id): Index(*row)
-                                        for row in cur.execute("select * from sys.indexes").fetchall()}
-    index_columns: dict[(int, int), IndexColumn] = {(row.object_id, row.index_id, row.index_column_id): IndexColumn(*row)
-                                                    for row in cur.execute("select * from sys.index_columns").fetchall()}
+    schemas: dict[int, Schema] = \
+        {row['schema_id']: Schema(**row)
+         for row in rows_to_dict(cur, "select * from sys.schemas")}
+    tables: dict[int, Table] = \
+        {row['object_id']: Table(**row)
+         for row in rows_to_dict(cur, "select * from sys.tables")}
+    columns: dict[(int, int), Column] = \
+        {(row['object_id'], row['column_id']): Column(**row)
+         for row in rows_to_dict(cur, "select * from sys.columns")}
+    indexes: dict[(int, int), Index] = \
+        {(row['object_id'], row['index_id']): Index(**row)
+         for row in rows_to_dict(cur, "select * from sys.indexes")}
+    index_columns: dict[(int, int, int), IndexColumn] = \
+        {(row['object_id'], row['index_id'], row['index_column_id']): IndexColumn(**row)
+         for row in rows_to_dict(cur, "select * from sys.index_columns")}
 
     conn.close()
 

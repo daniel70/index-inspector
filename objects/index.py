@@ -22,6 +22,10 @@ class Index:
     has_filter: bool | None
     filter_definition: str | None
     compression_delay: int | None
+    is_ignored_in_optimization: bool | None = None # SQL 2019
+    suppress_dup_key_messages: bool | None = None # SQL 2019
+    auto_created: bool | None = None # SQL 2019
+    optimize_for_sequential_key: bool | None = None # SQL 2019
 
     columns: list["IndexColumn"] = None
     includes: set["IndexColumn"] = None
@@ -47,6 +51,7 @@ class IndexColumn:
     partition_ordinal: int
     is_descending_key: bool | None
     is_included_column: bool | None
+    column_store_order_ordinal: int = None # SQL 2019
 
     name: str = None
 
