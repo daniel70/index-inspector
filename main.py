@@ -31,9 +31,12 @@ def connect_objects(schemas, tables, columns, indexes, index_columns):
             tables[index.object_id].indexes.add(index)
 
     for index_column in index_columns.values():
-        index_column.name = columns[(index_column.object_id, index_column.index_id)].name
+        index_column.name = columns[(index_column.object_id, index_column.column_id)].name
         if (index_column.object_id, index_column.index_id) in indexes:
-            indexes[(index_column.object_id, index_column.index_id)].columns.append(index_column)
+            if index_column.is_included_column:
+                indexes[(index_column.object_id, index_column.index_id)].includes.add(index_column)
+            else:
+                indexes[(index_column.object_id, index_column.index_id)].columns.append(index_column)
 
 
 class Inspect():
