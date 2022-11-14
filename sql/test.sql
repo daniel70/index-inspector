@@ -12,5 +12,6 @@ create table t1 (
 	c9 varchar(20) null)
 
 create index c1 on t1 (c1);
+create index d1 on t1 (c1);
 create index c1c2 on t1 (c1, c2);
 create index c1c2_c3 on t1 (c1, c2) include (c3);

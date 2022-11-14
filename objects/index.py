@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass()
@@ -44,7 +44,7 @@ class Index:
 @dataclass()
 class IndexColumn:
     object_id: int
-    index_id: int
+    index_id: int = field(compare=False)
     index_column_id: int
     column_id: int
     key_ordinal: int
@@ -56,7 +56,7 @@ class IndexColumn:
     name: str = None
 
     def __hash__(self):
-        return hash((self.object_id, self.index_id, self.index_column_id))
+        return hash((self.object_id, self.index_column_id)) # for equality we removed self.index_id
 
     def __str__(self):
         return self.name

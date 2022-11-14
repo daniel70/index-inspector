@@ -38,23 +38,50 @@ def connect_objects(schemas, tables, columns, indexes, index_columns):
             else:
                 indexes[(index_column.object_id, index_column.index_id)].columns.append(index_column)
 
+    return schemas, tables, columns, indexes, index_columns
 
-class Inspect():
 
-    def __init__(self):
-        pass
+class DuplicateIndex():
 
-    def __init__(self, reason: Reason, object_id_1: int, index_id_1: int, object_id_2: int, index_id_2: int):
-        self.reason = reason
-        self.object_id_1 = object_id_1
-        self.index_id_1 = index_id_1
-        self.object_id_2 = object_id_2
-        self.index_id_2 = index_id_2
+    def __init__(self, table: Table, index1: Index, index2: Index):
+        self.table = table
+        self.index1 = index1
+        self.index2 = index2
 
-    @classmethod
-    def from_dicts(cls, reason: Reason, this_index, other_index):
-        pass
+    def __str__(self):
+        return f"{self.table}: {self.index1} <--> {self.index2}"
 
+    def __eq__(self, other: "DuplicateIndex"):
+        if self.table != other.table:
+            return False
+        if self.index1 == other.index1 and self.index2 == other.index2:
+            return True
+        if self.index2 == other.index1 and self.index1 == other.index2:
+            return True
+        return False
+
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        return hash((self.table.object_id, min(self.index1.index_id, self.index2.index_id), max(self.index1.index_id, self.index2.index_id)))
+
+def inspect(tables):
+    doubles: dict[DuplicateIndex, Reason] = {}
+    for table in tables.values():
+        this: Index
+        that: Index
+        for this in table.indexes:
+            for that in table.indexes:
+                if this == that:
+                    continue
+                if DuplicateIndex(table, this, that) in doubles: # calls DuplicateIndex.__hash__ then, if false __eq__
+                    continue
+                if this.columns == that.columns:
+                    doubles[DuplicateIndex(table, this, that)] = Reason.EXACT
+                    continue
+    return doubles
 
 def duplicate_columns(indexes):
     duplicates = []
@@ -80,7 +107,7 @@ def duplicate_columns(indexes):
             seen.add(key)
 
             if this_value['columns'] == other_value['columns']:
-                duplicates.append(Inspect.from_dict(Reason.EXACT, this_value, other_value))
+                duplicates.append(DuplicateIndex.from_dict(Reason.EXACT, this_value, other_value))
                 print(
                     f"{this_value['table_name']} has duplicate columns for {this_value['index_name']} and {other_value['index_name']}")
                 exact_duplicates.append((this_key, other_key))
@@ -152,9 +179,10 @@ def main():
 
     conn.close()
 
-    connect_objects(schemas, tables, columns, indexes, index_columns)
-    pass
-
+    schemas, tables, columns, indexes, index_columns = connect_objects(schemas, tables, columns, indexes, index_columns)
+    doubles = inspect(tables)
+    for duplicate, reason in doubles.items():
+        print(duplicate, reason)
 
 if __name__ == "__main__":
     SystemExit(main())
