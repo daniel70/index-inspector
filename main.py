@@ -1,19 +1,24 @@
 import os
 from collections import defaultdict
-from enum import Enum
-from objects import Schema, Table, Column, Index, IndexColumn
+from enum import Enum, auto, IntEnum
+from objects import Schema, Table, Column, Index, IndexColumn, IndexUsage
 
 import pyodbc
 
 
 class Reason(Enum):
-    EXACT = 1
-    OVERLAP = 2
-    ALMOST = 3
-    INCLUDE = 4
+    EXACT = auto()
+    OVERLAPPING_INCLUDES = auto()
+    DIFFERENT_INCLUDES = auto()
+    OVERLAP = auto()
+    ALMOST = auto()
+    INCLUDE = auto()
 
 
-def connect_objects(schemas, tables, columns, indexes, index_columns):
+def connect_objects(schemas, tables, columns, indexes, index_columns, index_usage):
+    """
+    Connect the objects to each other. Tables are in a Schema and have Columns and Indexes which also have Columns etc.
+    """
     for schema in schemas.values():
         for table in tables.values():
             if table.schema_id == schema.schema_id:
@@ -28,6 +33,7 @@ def connect_objects(schemas, tables, columns, indexes, index_columns):
 
     for index in indexes.values():
         if index.object_id in tables:
+            index.table = tables[index.object_id]
             tables[index.object_id].indexes.add(index)
 
     for index_column in index_columns.values():
@@ -38,11 +44,19 @@ def connect_objects(schemas, tables, columns, indexes, index_columns):
             else:
                 indexes[(index_column.object_id, index_column.index_id)].columns.append(index_column)
 
-    return schemas, tables, columns, indexes, index_columns
+    for ix_usage in index_usage.values():
+        if (ix_usage.object_id, ix_usage.index_id) in indexes:
+            indexes[(ix_usage.object_id, ix_usage.index_id)].usage = ix_usage
+
+    return schemas, tables, columns, indexes, index_columns, index_usage
 
 
-class DuplicateIndex():
-
+class DuplicateIndex:
+    """
+    This class holds a Table and two indexes that are, somehow, duplicates or each other.
+    The exact reason why they are duplicates is not past of this class.
+    Classes of t1(c1, c2) equal t1(c2, c1) so we override __eq__ and __hash__.
+    """
     def __init__(self, table: Table, index1: Index, index2: Index):
         self.table = table
         self.index1 = index1
@@ -60,12 +74,9 @@ class DuplicateIndex():
             return True
         return False
 
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
-
     def __hash__(self):
         return hash((self.table.object_id, min(self.index1.index_id, self.index2.index_id), max(self.index1.index_id, self.index2.index_id)))
+
 
 def inspect(tables):
     doubles: dict[DuplicateIndex, Reason] = {}
@@ -76,62 +87,48 @@ def inspect(tables):
             for that in table.indexes:
                 if this == that:
                     continue
-                if DuplicateIndex(table, this, that) in doubles: # calls DuplicateIndex.__hash__ then, if false __eq__
+                if DuplicateIndex(table, this, that) in doubles:
+                    # calls DuplicateIndex.__hash__ then, if false, DuplicateIndex.__eq__
                     continue
+
                 if this.columns == that.columns:
-                    doubles[DuplicateIndex(table, this, that)] = Reason.EXACT
+                    if this.includes == that.includes:
+                        #   EXACT duplicates means two indexes on the same table with the same columns in the same order
+                        #   t1(c1, c2, c3) == t1(c1, c2, c3)
+                        doubles[DuplicateIndex(table, this, that)] = Reason.EXACT
+                        continue
+
+                    elif this.includes.issuperset(that.includes) or this.includes.issubset(that.includes):
+                        #   OVERLAPPING_INCLUDES
+                        #   t1(c1, i2) vs t1(c1)
+                        #   t1(c1, i2, i3) vs t1(c1, i3)
+
+                        #   superset is the first table
+                        if this.includes.issuperset(that.includes):
+                            doubles[DuplicateIndex(table, this, that)] = Reason.OVERLAPPING_INCLUDES
+                        else:
+                            doubles[DuplicateIndex(table, that, this)] = Reason.OVERLAPPING_INCLUDES
+
+                        continue
+
+                    else:
+                        #   DIFFERENT_INCLUDES means the indexes only differ in includes
+                        #   t1(c1, i2) vs t1(c1, i3)
+                        doubles[DuplicateIndex(table, this, that)] = Reason.DIFFERENT_INCLUDES
+                        continue
+
+                #   OVERLAP means one index has all columns in the same order as another one, plus one or more extra
+                #   t1(c1, c2, c3, c4) overlaps t1(c1, c2) but not t1(c2, c3)
+                elif this.columns[:len(that.columns)] == that.columns \
+                        or that.columns[:len(this.columns)] == this.columns:
+                    # index with most columns comes first
+                    if len(this.columns) > len(that.columns):
+                        doubles[DuplicateIndex(table, this, that)] = Reason.OVERLAP
+                    else:
+                        doubles[DuplicateIndex(table, that, this)] = Reason.OVERLAP
                     continue
+
     return doubles
-
-def duplicate_columns(indexes):
-    duplicates = []
-    exact_duplicates = []
-    overlap_duplicates = []
-    almost_duplicates = []
-    last_column_included = []
-
-    seen = set()
-    for this_key, this_value in indexes.items():
-        this_object_id, this_index_id = this_key
-        for other_key, other_value in indexes.items():
-            if this_key == other_key:  # don't compare to self
-                continue
-            other_object_id, other_index_id = other_key
-            if this_object_id != other_object_id:  # only compare to same table
-                continue
-
-            key = (this_object_id, min(this_index_id, other_index_id), max(this_index_id, other_index_id))
-            if key in seen:  # we have already compared these two
-                continue
-
-            seen.add(key)
-
-            if this_value['columns'] == other_value['columns']:
-                duplicates.append(DuplicateIndex.from_dict(Reason.EXACT, this_value, other_value))
-                print(
-                    f"{this_value['table_name']} has duplicate columns for {this_value['index_name']} and {other_value['index_name']}")
-                exact_duplicates.append((this_key, other_key))
-                continue
-            elif this_value['columns'][:len(other_value['columns'])] == other_value['columns'] \
-                    or other_value['columns'][:len(this_value['columns'])] == this_value['columns']:
-                # overlapping means index on [col1, col2, col3, col4] overlaps index on [col1, col2]
-                # but not index on [col2, col3]
-                print(
-                    f"{this_value['table_name']} has overlapping duplicate columns for {this_value['index_name']} and {other_value['index_name']}")
-                overlap_duplicates.append((this_key, other_key))
-                continue
-
-            # last_column_included finds these kind of indexes:
-            #     idx1: [col1, col2, col3] include []
-            #     idx2: [col1, col2] include [col3]
-            # idx2 is not needed here
-            elif (this_value['columns'][:len(other_value['columns']) - 1] == other_value['columns']
-                  and other_value['columns'][-1] in other_value['includes']) or \
-                    (other_value['columns'][:len(this_value['columns']) - 1] == this_value['columns']
-                     and this_value['columns'][-1] in this_value['includes']):
-                print(f"found last_column_included error")
-
-    return exact_duplicates
 
 
 def rows_to_dict(cur, sql):
@@ -172,17 +169,25 @@ def main():
          for row in rows_to_dict(cur, "select * from sys.columns")}
     indexes: dict[(int, int), Index] = \
         {(row['object_id'], row['index_id']): Index(**row)
-         for row in rows_to_dict(cur, "select * from sys.indexes")}
+         for row in rows_to_dict(cur, "select i.* from sys.indexes i join sys.tables t on i.object_id = t.object_id")}
     index_columns: dict[(int, int, int), IndexColumn] = \
         {(row['object_id'], row['index_id'], row['index_column_id']): IndexColumn(**row)
          for row in rows_to_dict(cur, "select * from sys.index_columns")}
+    index_usage: dict[(int, int, int), IndexUsage] = \
+        {(row['object_id'], row['index_id']): IndexUsage(**row)
+         for row in rows_to_dict(cur, "select * from sys.dm_db_index_usage_stats where database_id = DB_ID()")}
 
     conn.close()
 
-    schemas, tables, columns, indexes, index_columns = connect_objects(schemas, tables, columns, indexes, index_columns)
+    schemas, tables, columns, indexes, index_columns, index_usage = connect_objects(schemas, tables, columns, indexes, index_columns, index_usage)
     doubles = inspect(tables)
     for duplicate, reason in doubles.items():
         print(duplicate, reason)
 
+    pass
+
 if __name__ == "__main__":
     SystemExit(main())
+
+
+# i = indexes[(864722133, 5)]

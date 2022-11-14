@@ -2,6 +2,7 @@
 select name + ': ' + case sc.system_type_id
 when 231 then 'str'
 when 52 then 'str'
+when 127 then 'int' --bigint
 when 56 then 'int'
 when 175 then 'str'
 when 61 then 'datetime'
@@ -18,10 +19,10 @@ from sys.system_columns sc
 -- where sc.object_id = object_id('sys.tables')
 -- where sc.object_id = object_id('sys.columns')
 -- where sc.object_id = object_id('sys.indexes')
-where sc.object_id = object_id('sys.index_columns')
+--where sc.object_id = object_id('sys.index_columns')
+where sc.object_id = object_id('sys.dm_db_index_usage_stats')
+--order by sc.column_id
 
-order by sc.column_id
-
-select * from sys.indexes
-select * from sys.index_columns
+--select * from sys.indexes
+--select * from sys.index_columns
 
