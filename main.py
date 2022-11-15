@@ -16,7 +16,6 @@ class Reason(Enum):
     UNIQUE = auto()
 
 
-
 def connect_objects(schemas, tables, columns, indexes, index_columns, index_usage):
     """
     Connect the objects to each other. Tables are in a Schema and have Columns and Indexes which also have Columns etc.
