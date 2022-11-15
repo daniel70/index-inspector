@@ -13,6 +13,8 @@ class Reason(Enum):
     OVERLAP = auto()
     ALMOST = auto()
     INCLUDE = auto()
+    UNIQUE = auto()
+
 
 
 def connect_objects(schemas, tables, columns, indexes, index_columns, index_usage):
@@ -87,6 +89,15 @@ def inspect(tables):
             for that in table.indexes:
                 if this == that:
                     continue
+
+                #   UNIQUE will detect indexes that should be unique but are not
+                #   unique t1(c1) vs t1(c1, c2) -> t1(c1, c2) should be unique also
+                #   we don't continue after we find this case because it may have other issues as well
+                if not this.is_unique and not this.is_unique_constraint:
+                    if that.is_unique or that.is_unique_constraint:
+                        if set(c.column_id for c in that.columns).issubset(set(c.column_id for c in this.columns)):
+                            doubles[DuplicateIndex(table, this, that)] = Reason.UNIQUE
+
                 if DuplicateIndex(table, this, that) in doubles:
                     # calls DuplicateIndex.__hash__ then, if false, DuplicateIndex.__eq__
                     continue
@@ -144,7 +155,7 @@ def rows_to_dict(cur, sql):
     return results
 
 
-def main():
+def main() -> int:
     if 'ODBC Driver 17 for SQL Server' in pyodbc.drivers():
         driver = 'ODBC Driver 17 for SQL Server'
     elif 'SQL Server Native Client 11.0' in pyodbc.drivers():
@@ -158,24 +169,36 @@ def main():
     conn = pyodbc.connect(f"Driver={{{driver}}};Server={server};Database={database};Trusted_Connection=yes;APP={app}")
     cur = conn.cursor()
 
+    sql = "select s.* from sys.schemas s join sys.tables t on s.schema_id = t.schema_id and t.is_ms_shipped = 0"
     schemas: dict[int, Schema] = \
         {row['schema_id']: Schema(**row)
-         for row in rows_to_dict(cur, "select * from sys.schemas")}
+         for row in rows_to_dict(cur, sql)}
+    sql = "select * from sys.tables where is_ms_shipped = 0"
     tables: dict[int, Table] = \
         {row['object_id']: Table(**row)
-         for row in rows_to_dict(cur, "select * from sys.tables")}
+         for row in rows_to_dict(cur, sql)}
+    sql = "select c.* from sys.columns c join sys.tables t on c.object_id = t.object_id order by c.column_id"
     columns: dict[(int, int), Column] = \
         {(row['object_id'], row['column_id']): Column(**row)
-         for row in rows_to_dict(cur, "select * from sys.columns")}
+         for row in rows_to_dict(cur, sql)}
+    sql = "select i.* from sys.indexes i join sys.tables t on i.object_id = t.object_id"
     indexes: dict[(int, int), Index] = \
         {(row['object_id'], row['index_id']): Index(**row)
-         for row in rows_to_dict(cur, "select i.* from sys.indexes i join sys.tables t on i.object_id = t.object_id")}
+         for row in rows_to_dict(cur, sql)}
+    sql = """
+    select ic.*
+    from sys.index_columns ic 
+    join sys.columns c on ic.column_id = c.column_id and ic.object_id = c.object_id
+    join sys.tables t on c.object_id = t.object_id
+    order by object_id, index_id, index_column_id
+    """
     index_columns: dict[(int, int, int), IndexColumn] = \
         {(row['object_id'], row['index_id'], row['index_column_id']): IndexColumn(**row)
-         for row in rows_to_dict(cur, "select * from sys.index_columns")}
+         for row in rows_to_dict(cur, sql)}
+    sql = "select * from sys.dm_db_index_usage_stats where database_id = DB_ID()"
     index_usage: dict[(int, int, int), IndexUsage] = \
         {(row['object_id'], row['index_id']): IndexUsage(**row)
-         for row in rows_to_dict(cur, "select * from sys.dm_db_index_usage_stats where database_id = DB_ID()")}
+         for row in rows_to_dict(cur, sql)}
 
     conn.close()
 
@@ -185,6 +208,8 @@ def main():
         print(duplicate, reason)
 
     pass
+    return 0
+
 
 if __name__ == "__main__":
     SystemExit(main())

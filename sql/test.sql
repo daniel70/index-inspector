@@ -15,3 +15,6 @@ create index c1 on t1 (c1);
 create index d1 on t1 (c1);
 create index c1c2 on t1 (c1, c2);
 create index c1c2_c3 on t1 (c1, c2) include (c3);
+-- UNIQUE
+create unique index c4c5 on t1 (c4, c5);
+create index c5c6c4 on t1 (c5, c6, c4);
