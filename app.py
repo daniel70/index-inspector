@@ -1,27 +1,29 @@
 import os
 import sys
+
+from PySide6 import QtCore
 from PySide6.QtWidgets import QApplication, QDialog, QDialogButtonBox, QMainWindow, QLayout
 from ui.ui_ConnectToServer import Ui_ConnectToServer
 from ui.ui_MainWindow import Ui_MainWindow
 
 
 class MainWindow(QMainWindow):
-    def connect_clicked(self):
-        self.dlg_connect.show()
-
     def __init__(self):
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.dlg_connect = ConnectToServer(self)
         self.ui.actionConnect.triggered.connect(self.connect_clicked)
+    @QtCore.Slot()
+    def connect_clicked(self):
+        dlg_connect = ConnectToServer(self)
+        dlg_connect.show()
 
 
 class ConnectToServer(QDialog):
     def __init__(self, parent=None):
         super().__init__()
         self.ui = Ui_ConnectToServer()
-        self.ui.setupUi(self)
+        self.ui.setupUi()
 
         self.ui.buttonBox.button(QDialogButtonBox.Ok).setText("Connect")
         self.ui.cmbAuthentication.currentTextChanged.connect(self.authentication_changed)
