@@ -1,20 +1,19 @@
 import os
 import sys
-from PySide6.QtWidgets import QApplication, QDialog, QDialogButtonBox, QMainWindow
+from PySide6.QtWidgets import QApplication, QDialog, QDialogButtonBox, QMainWindow, QLayout
 from ui.ui_ConnectToServer import Ui_ConnectToServer
 from ui.ui_MainWindow import Ui_MainWindow
 
 
 class MainWindow(QMainWindow):
     def connect_clicked(self):
-        self.dlg_connect = ConnectToServer(self)
         self.dlg_connect.show()
 
     def __init__(self):
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-
+        self.dlg_connect = ConnectToServer(self)
         self.ui.actionConnect.triggered.connect(self.connect_clicked)
 
 

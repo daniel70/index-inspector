@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'ConnectToServerlioebS.ui'
+## Form generated from reading UI file 'ConnectToServerUJzOhD.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.0
 ##
@@ -24,9 +24,12 @@ class Ui_ConnectToServer(object):
     def setupUi(self, ConnectToServer):
         if not ConnectToServer.objectName():
             ConnectToServer.setObjectName(u"ConnectToServer")
-        ConnectToServer.resize(374, 220)
+        ConnectToServer.resize(405, 265)
+        ConnectToServer.setModal(True)
         self.verticalLayout = QVBoxLayout(ConnectToServer)
         self.verticalLayout.setObjectName(u"verticalLayout")
+        self.verticalLayout.setSizeConstraint(QLayout.SetFixedSize)
+        self.verticalLayout.setContentsMargins(18, -1, 18, -1)
         self.lblHeader = QLabel(ConnectToServer)
         self.lblHeader.setObjectName(u"lblHeader")
         sizePolicy = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Maximum)
@@ -58,7 +61,7 @@ class Ui_ConnectToServer(object):
         self.lblAuthentication = QLabel(ConnectToServer)
         self.lblAuthentication.setObjectName(u"lblAuthentication")
 
-        self.frmServer.setWidget(1, QFormLayout.LabelRole, self.lblAuthentication)
+        self.frmServer.setWidget(3, QFormLayout.LabelRole, self.lblAuthentication)
 
         self.cmbAuthentication = QComboBox(ConnectToServer)
         self.cmbAuthentication.addItem("")
@@ -69,7 +72,7 @@ class Ui_ConnectToServer(object):
         self.cmbAuthentication.setObjectName(u"cmbAuthentication")
         self.cmbAuthentication.setEditable(False)
 
-        self.frmServer.setWidget(1, QFormLayout.FieldRole, self.cmbAuthentication)
+        self.frmServer.setWidget(3, QFormLayout.FieldRole, self.cmbAuthentication)
 
         self.cmbServerName = QComboBox(ConnectToServer)
         self.cmbServerName.setObjectName(u"cmbServerName")
@@ -77,12 +80,38 @@ class Ui_ConnectToServer(object):
 
         self.frmServer.setWidget(0, QFormLayout.FieldRole, self.cmbServerName)
 
+        self.lblPort = QLabel(ConnectToServer)
+        self.lblPort.setObjectName(u"lblPort")
+
+        self.frmServer.setWidget(2, QFormLayout.LabelRole, self.lblPort)
+
+        self.txtPort = QLineEdit(ConnectToServer)
+        self.txtPort.setObjectName(u"txtPort")
+        sizePolicy1 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        sizePolicy1.setHorizontalStretch(0)
+        sizePolicy1.setVerticalStretch(0)
+        sizePolicy1.setHeightForWidth(self.txtPort.sizePolicy().hasHeightForWidth())
+        self.txtPort.setSizePolicy(sizePolicy1)
+        self.txtPort.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
+
+        self.frmServer.setWidget(2, QFormLayout.FieldRole, self.txtPort)
+
+        self.lblDatabase = QLabel(ConnectToServer)
+        self.lblDatabase.setObjectName(u"lblDatabase")
+
+        self.frmServer.setWidget(1, QFormLayout.LabelRole, self.lblDatabase)
+
+        self.txtDatabase = QLineEdit(ConnectToServer)
+        self.txtDatabase.setObjectName(u"txtDatabase")
+
+        self.frmServer.setWidget(1, QFormLayout.FieldRole, self.txtDatabase)
+
 
         self.verticalLayout.addLayout(self.frmServer)
 
         self.frmUser = QFormLayout()
         self.frmUser.setObjectName(u"frmUser")
-        self.frmUser.setSizeConstraint(QLayout.SetMaximumSize)
+        self.frmUser.setSizeConstraint(QLayout.SetDefaultConstraint)
         self.frmUser.setLabelAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
         self.frmUser.setHorizontalSpacing(50)
         self.frmUser.setContentsMargins(30, -1, -1, -1)
@@ -114,7 +143,7 @@ class Ui_ConnectToServer(object):
 
         self.verticalLayout.addLayout(self.frmUser)
 
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Minimum, QSizePolicy.Expanding)
+        self.verticalSpacer = QSpacerItem(20, 10, QSizePolicy.Minimum, QSizePolicy.Expanding)
 
         self.verticalLayout.addItem(self.verticalSpacer)
 
@@ -144,6 +173,9 @@ class Ui_ConnectToServer(object):
         self.cmbAuthentication.setItemText(3, QCoreApplication.translate("ConnectToServer", u"Azure Active Directory - Password", None))
         self.cmbAuthentication.setItemText(4, QCoreApplication.translate("ConnectToServer", u"Azure Active Directory - Integrated", None))
 
+        self.lblPort.setText(QCoreApplication.translate("ConnectToServer", u"Port:", None))
+        self.txtPort.setText(QCoreApplication.translate("ConnectToServer", u"1433", None))
+        self.lblDatabase.setText(QCoreApplication.translate("ConnectToServer", u"Database:", None))
         self.lblUserName.setText(QCoreApplication.translate("ConnectToServer", u"User name:", None))
         self.lblPassword.setText(QCoreApplication.translate("ConnectToServer", u"Password:", None))
     # retranslateUi
