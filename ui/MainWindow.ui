@@ -13,7 +13,15 @@
   <property name="windowTitle">
    <string>Index Inspector</string>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="styleSheet">
+    <string notr="true">background-image:url(\&quot;art\\index-inspector-logo.png\&quot;); background-position: center; background-repeat: no-repeat
+</string>
+   </property>
+  </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
