@@ -17,10 +17,10 @@ end as code
 from sys.system_columns sc
 --where sc.object_id = object_id('sys.schemas')
 -- where sc.object_id = object_id('sys.tables')
--- where sc.object_id = object_id('sys.columns')
+where sc.object_id = object_id('sys.columns')
 -- where sc.object_id = object_id('sys.indexes')
 --where sc.object_id = object_id('sys.index_columns')
-where sc.object_id = object_id('sys.dm_db_index_usage_stats')
+-- where sc.object_id = object_id('sys.dm_db_index_usage_stats')
 --order by sc.column_id
 
 --select * from sys.indexes

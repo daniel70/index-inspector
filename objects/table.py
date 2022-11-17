@@ -40,11 +40,18 @@ class Table:
     history_table_id: int | None
     is_remote_data_archive_enabled: bool | None
     is_external: bool
-    history_retention_period: int | None = None # SQL 2019
-    history_retention_period_unit: int | None = None # SQL 2019
-    history_retention_period_unit_desc: str | None = None # SQL 2019
-    is_node: bool | None = None # SQL 2019
-    is_edge: bool | None = None # SQL 2019
+    history_retention_period: int | None = None  # SQL 2019
+    history_retention_period_unit: int | None = None  # SQL 2019
+    history_retention_period_unit_desc: str | None = None  # SQL 2019
+    is_node: bool | None = None  # SQL 2019
+    is_edge: bool | None = None  # SQL 2019
+    data_retention_period: int | None = None  # SQL 2022
+    data_retention_period_unit: int | None = None  # SQL 2022
+    data_retention_period_unit_desc: str | None = None  # SQL 2022
+    ledger_type: int | None = None  # SQL 2022
+    ledger_type_desc: str | None = None  # SQL 2022
+    ledger_view_id: int | None = None  # SQL 2022
+    is_dropped_ledger_table: bool | None = None  # SQL 2022
 
     schema: "Schema" = None
     columns: list["Column"] = None

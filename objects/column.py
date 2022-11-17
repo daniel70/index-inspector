@@ -38,8 +38,12 @@ class Column:
     column_encryption_key_database_name: str | None
     is_hidden: bool | None
     is_masked: bool
-    graph_type: int | None = None # SQL 2019
-    graph_type_desc: str | None = None # SQL 2019
+    graph_type: int | None = None  # SQL 2019
+    graph_type_desc: str | None = None  # SQL 2019
+    is_data_deletion_filter_column: bool | None = None  # SQL 2022
+    ledger_view_column_type: int | None = None  # SQL 2022
+    ledger_view_column_type_desc: str | None = None  # SQL 2022
+    is_dropped_ledger_column: bool | None = None  # SQL 2022
 
     table: "Table" = None
 
