@@ -50,7 +50,6 @@ class DuplicateIndexes(QAbstractTableModel):
         self.rows = sorted(self.rows, key=operator.itemgetter(column), reverse=reverse)
         self.emit(SIGNAL("layoutChanged()"))
 
-    def 
 
 class MainWindow(QMainWindow):
     def __init__(self):
