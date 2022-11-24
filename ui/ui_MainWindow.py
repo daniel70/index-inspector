@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'MainWindowlPbztX.ui'
+## Form generated from reading UI file 'MainWindowfyjFym.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.0
 ##
@@ -16,41 +16,54 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QIcon, QImage, QKeySequence, QLinearGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
-from PySide6.QtWidgets import (QApplication, QMainWindow, QMenu, QMenuBar,
-    QSizePolicy, QStatusBar, QToolBar, QWidget)
+from PySide6.QtWidgets import (QApplication, QHeaderView, QMainWindow, QSizePolicy,
+    QStatusBar, QTableView, QToolBar, QVBoxLayout,
+    QWidget)
+import resources_rc
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(800, 600)
+        MainWindow.resize(796, 600)
+        icon = QIcon()
+        icon.addFile(u":/program/art/index-inspector-no-text.svg", QSize(), QIcon.Normal, QIcon.Off)
+        MainWindow.setWindowIcon(icon)
         MainWindow.setStyleSheet(u"")
         self.actionConnect = QAction(MainWindow)
         self.actionConnect.setObjectName(u"actionConnect")
+        icon1 = QIcon()
+        icon1.addFile(u":/toolbar/art/feather/database.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.actionConnect.setIcon(icon1)
         self.actionExit = QAction(MainWindow)
         self.actionExit.setObjectName(u"actionExit")
+        self.actionRefresh = QAction(MainWindow)
+        self.actionRefresh.setObjectName(u"actionRefresh")
+        icon2 = QIcon()
+        icon2.addFile(u":/toolbar/art/feather/refresh-cw.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.actionRefresh.setIcon(icon2)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
-        self.centralwidget.setStyleSheet(u"background-image:url(\\\"art\\\\index-inspector-logo.png\\\"); background-position: center; background-repeat: no-repeat\n"
-"")
+        self.centralwidget.setStyleSheet(u"")
+        self.verticalLayout = QVBoxLayout(self.centralwidget)
+        self.verticalLayout.setObjectName(u"verticalLayout")
+        self.tableView = QTableView(self.centralwidget)
+        self.tableView.setObjectName(u"tableView")
+
+        self.verticalLayout.addWidget(self.tableView)
+
         MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QMenuBar(MainWindow)
-        self.menubar.setObjectName(u"menubar")
-        self.menubar.setGeometry(QRect(0, 0, 800, 22))
-        self.menuConnexct = QMenu(self.menubar)
-        self.menuConnexct.setObjectName(u"menuConnexct")
-        MainWindow.setMenuBar(self.menubar)
         self.statusbar = QStatusBar(MainWindow)
         self.statusbar.setObjectName(u"statusbar")
         MainWindow.setStatusBar(self.statusbar)
         self.toolBar = QToolBar(MainWindow)
         self.toolBar.setObjectName(u"toolBar")
+        self.toolBar.setMovable(False)
         MainWindow.addToolBar(Qt.TopToolBarArea, self.toolBar)
 
-        self.menubar.addAction(self.menuConnexct.menuAction())
-        self.menuConnexct.addAction(self.actionConnect)
-        self.menuConnexct.addSeparator()
-        self.menuConnexct.addAction(self.actionExit)
+        self.toolBar.addAction(self.actionConnect)
+        self.toolBar.addSeparator()
+        self.toolBar.addAction(self.actionRefresh)
 
         self.retranslateUi(MainWindow)
 
@@ -60,8 +73,14 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Index Inspector", None))
         self.actionConnect.setText(QCoreApplication.translate("MainWindow", u"Connect", None))
+#if QT_CONFIG(tooltip)
+        self.actionConnect.setToolTip(QCoreApplication.translate("MainWindow", u"Connect to a database", None))
+#endif // QT_CONFIG(tooltip)
         self.actionExit.setText(QCoreApplication.translate("MainWindow", u"Exit", None))
-        self.menuConnexct.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
+        self.actionRefresh.setText(QCoreApplication.translate("MainWindow", u"Refresh", None))
+#if QT_CONFIG(tooltip)
+        self.actionRefresh.setToolTip(QCoreApplication.translate("MainWindow", u"Reload data", None))
+#endif // QT_CONFIG(tooltip)
         self.toolBar.setWindowTitle(QCoreApplication.translate("MainWindow", u"toolBar", None))
     # retranslateUi
 

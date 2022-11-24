@@ -76,7 +76,9 @@ class DuplicateIndex:
         return False
 
     def __hash__(self):
-        return hash((self.table.object_id, min(self.index1.index_id, self.index2.index_id), max(self.index1.index_id, self.index2.index_id)))
+        return hash((self.table.object_id,
+                     min(self.index1.index_id, self.index2.index_id),
+                     max(self.index1.index_id, self.index2.index_id)))
 
 
 def inspect(tables):
@@ -201,7 +203,8 @@ def main() -> int:
 
     conn.close()
 
-    schemas, tables, columns, indexes, index_columns, index_usage = connect_objects(schemas, tables, columns, indexes, index_columns, index_usage)
+    schemas, tables, columns, indexes, index_columns, index_usage = connect_objects(
+        schemas, tables, columns, indexes, index_columns, index_usage)
     doubles = inspect(tables)
     for duplicate, reason in doubles.items():
         print(duplicate, reason)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'ConnectToServerUJzOhD.ui'
+## Form generated from reading UI file 'ConnectToServeryQdnBt.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.0
 ##
@@ -52,7 +52,7 @@ class Ui_ConnectToServer(object):
         self.frmServer.setSizeConstraint(QLayout.SetDefaultConstraint)
         self.frmServer.setFormAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignTop)
         self.frmServer.setHorizontalSpacing(30)
-        self.frmServer.setContentsMargins(-1, 10, -1, -1)
+        self.frmServer.setContentsMargins(6, 6, 6, 6)
         self.lblServerName = QLabel(ConnectToServer)
         self.lblServerName.setObjectName(u"lblServerName")
 
@@ -87,11 +87,14 @@ class Ui_ConnectToServer(object):
 
         self.txtPort = QLineEdit(ConnectToServer)
         self.txtPort.setObjectName(u"txtPort")
+        self.txtPort.setEnabled(True)
         sizePolicy1 = QSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         sizePolicy1.setHorizontalStretch(0)
         sizePolicy1.setVerticalStretch(0)
         sizePolicy1.setHeightForWidth(self.txtPort.sizePolicy().hasHeightForWidth())
         self.txtPort.setSizePolicy(sizePolicy1)
+        self.txtPort.setMaximumSize(QSize(50, 16777215))
+        self.txtPort.setMaxLength(5)
         self.txtPort.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
 
         self.frmServer.setWidget(2, QFormLayout.FieldRole, self.txtPort)
@@ -103,6 +106,12 @@ class Ui_ConnectToServer(object):
 
         self.txtDatabase = QLineEdit(ConnectToServer)
         self.txtDatabase.setObjectName(u"txtDatabase")
+        sizePolicy2 = QSizePolicy(QSizePolicy.Preferred, QSizePolicy.Fixed)
+        sizePolicy2.setHorizontalStretch(0)
+        sizePolicy2.setVerticalStretch(0)
+        sizePolicy2.setHeightForWidth(self.txtDatabase.sizePolicy().hasHeightForWidth())
+        self.txtDatabase.setSizePolicy(sizePolicy2)
+        self.txtDatabase.setMaxLength(50)
 
         self.frmServer.setWidget(1, QFormLayout.FieldRole, self.txtDatabase)
 
@@ -114,7 +123,7 @@ class Ui_ConnectToServer(object):
         self.frmUser.setSizeConstraint(QLayout.SetDefaultConstraint)
         self.frmUser.setLabelAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
         self.frmUser.setHorizontalSpacing(50)
-        self.frmUser.setContentsMargins(30, -1, -1, -1)
+        self.frmUser.setContentsMargins(30, 6, 6, 6)
         self.lblUserName = QLabel(ConnectToServer)
         self.lblUserName.setObjectName(u"lblUserName")
         self.lblUserName.setEnabled(False)
@@ -130,6 +139,7 @@ class Ui_ConnectToServer(object):
         self.txtPassword = QLineEdit(ConnectToServer)
         self.txtPassword.setObjectName(u"txtPassword")
         self.txtPassword.setEnabled(False)
+        self.txtPassword.setMaxLength(50)
         self.txtPassword.setEchoMode(QLineEdit.Password)
 
         self.frmUser.setWidget(1, QFormLayout.FieldRole, self.txtPassword)
@@ -137,6 +147,7 @@ class Ui_ConnectToServer(object):
         self.txtUserName = QLineEdit(ConnectToServer)
         self.txtUserName.setObjectName(u"txtUserName")
         self.txtUserName.setEnabled(False)
+        self.txtUserName.setMaxLength(50)
 
         self.frmUser.setWidget(0, QFormLayout.FieldRole, self.txtUserName)
 
@@ -154,6 +165,11 @@ class Ui_ConnectToServer(object):
 
         self.verticalLayout.addWidget(self.buttonBox)
 
+        QWidget.setTabOrder(self.cmbServerName, self.txtDatabase)
+        QWidget.setTabOrder(self.txtDatabase, self.txtPort)
+        QWidget.setTabOrder(self.txtPort, self.cmbAuthentication)
+        QWidget.setTabOrder(self.cmbAuthentication, self.txtUserName)
+        QWidget.setTabOrder(self.txtUserName, self.txtPassword)
 
         self.retranslateUi(ConnectToServer)
         self.buttonBox.accepted.connect(ConnectToServer.accept)
