@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'MainWindowfyjFym.ui'
+## Form generated from reading UI file 'MainWindowqljVnu.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.0
 ##
@@ -16,9 +16,9 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QIcon, QImage, QKeySequence, QLinearGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
-from PySide6.QtWidgets import (QApplication, QHeaderView, QMainWindow, QSizePolicy,
-    QStatusBar, QTableView, QToolBar, QVBoxLayout,
-    QWidget)
+from PySide6.QtWidgets import (QApplication, QCheckBox, QGroupBox, QHBoxLayout,
+    QHeaderView, QMainWindow, QSizePolicy, QStatusBar,
+    QTableView, QToolBar, QVBoxLayout, QWidget)
 import resources_rc
 
 class Ui_MainWindow(object):
@@ -47,6 +47,25 @@ class Ui_MainWindow(object):
         self.centralwidget.setStyleSheet(u"")
         self.verticalLayout = QVBoxLayout(self.centralwidget)
         self.verticalLayout.setObjectName(u"verticalLayout")
+        self.groupBox = QGroupBox(self.centralwidget)
+        self.groupBox.setObjectName(u"groupBox")
+        self.horizontalLayout = QHBoxLayout(self.groupBox)
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.chkMale = QCheckBox(self.groupBox)
+        self.chkMale.setObjectName(u"chkMale")
+        self.chkMale.setChecked(True)
+
+        self.horizontalLayout.addWidget(self.chkMale)
+
+        self.chkFemale = QCheckBox(self.groupBox)
+        self.chkFemale.setObjectName(u"chkFemale")
+        self.chkFemale.setChecked(True)
+
+        self.horizontalLayout.addWidget(self.chkFemale)
+
+
+        self.verticalLayout.addWidget(self.groupBox)
+
         self.tableView = QTableView(self.centralwidget)
         self.tableView.setObjectName(u"tableView")
 
@@ -81,6 +100,9 @@ class Ui_MainWindow(object):
 #if QT_CONFIG(tooltip)
         self.actionRefresh.setToolTip(QCoreApplication.translate("MainWindow", u"Reload data", None))
 #endif // QT_CONFIG(tooltip)
+        self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Sex", None))
+        self.chkMale.setText(QCoreApplication.translate("MainWindow", u"Male", None))
+        self.chkFemale.setText(QCoreApplication.translate("MainWindow", u"Female", None))
         self.toolBar.setWindowTitle(QCoreApplication.translate("MainWindow", u"toolBar", None))
     # retranslateUi
 

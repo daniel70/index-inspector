@@ -19,11 +19,11 @@ from ui.ui_MainWindow import Ui_MainWindow
 class DuplicateIndexes(QAbstractTableModel):
     def __init__(self, parent):
         super().__init__(parent)
-        self.header = ["name", "age"]
+        self.header = ["name", "age", "sex"]
         self.rows = [
-            ("Sofie", 20),
-            ("Rindert", 18),
-            ("Geerten", 16),
+            ("Sofie", 20, "F"),
+            ("Rindert", 18, "M"),
+            ("Geerten", 16, "M"),
         ]
 
     def rowCount(self, parent: Union[PySide6.QtCore.QModelIndex, PySide6.QtCore.QPersistentModelIndex] = ...) -> int:
