@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../resources.qrc">
-    <normaloff>:/program/art/index-inspector-no-text.svg</normaloff>:/program/art/index-inspector-no-text.svg</iconset>
+    <normaloff>:/program/art/toolbar/logo.svg</normaloff>:/program/art/toolbar/logo.svg</iconset>
   </property>
   <property name="styleSheet">
    <string notr="true"/>

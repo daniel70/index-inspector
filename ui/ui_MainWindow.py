@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'MainWindowqljVnu.ui'
+## Form generated from reading UI file 'MainWindowfyjFym.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.0
 ##
@@ -27,7 +27,7 @@ class Ui_MainWindow(object):
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(796, 600)
         icon = QIcon()
-        icon.addFile(u":/program/art/index-inspector-no-text.svg", QSize(), QIcon.Normal, QIcon.Off)
+        icon.addFile(u":/program/art/toolbar/logo.svg", QSize(), QIcon.Normal, QIcon.Off)
         MainWindow.setWindowIcon(icon)
         MainWindow.setStyleSheet(u"")
         self.actionConnect = QAction(MainWindow)

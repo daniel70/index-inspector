@@ -1,6 +1,7 @@
 import operator
 import os
 import sys
+from dataclasses import dataclass, fields
 from time import sleep
 from typing import Union, Any
 
@@ -16,14 +17,46 @@ from ui.ui_MainWindow import Ui_MainWindow
 # to reload the resource file run: pyside6-rcc.exe .\resources.qrc -o resources_rc.py
 
 
+#test class
+@dataclass()
+class Child:
+    def __getitem__(self, item):
+        """
+        QT model/views need data objects that are subscriptable, like string, list, dict
+        The properties of dataclasses are not, however, we can make them behave like one.
+        The easiest way is by hardcoding the values, it can also be done programmatically, like so:
+
+        myfields = {i: fld.name for i, fld in enumerate(fields(self.__class__))}
+        return self.__getattribute__(myfields[item])
+
+        However:
+        Explicit is better than implicit.
+        Simple is better than complex.
+        so I put it here, as the first function, so it won't be overlooked when new fields are added to this class.
+        """
+        match item:
+            case 0:
+                return self.name
+            case 1:
+                return self.age
+            case 2:
+                return self.sex
+            case _:
+                raise IndexError()
+
+    name: str
+    age: int
+    sex: str
+
+
 class DuplicateIndexes(QAbstractTableModel):
     def __init__(self, parent):
         super().__init__(parent)
         self.header = ["name", "age", "sex"]
         self.rows = [
-            ("Sofie", 20, "F"),
-            ("Rindert", 18, "M"),
-            ("Geerten", 16, "M"),
+            Child("Sofie", 20, "F"),
+            Child("Rindert", 18, "M"),
+            Child("Geerten", 16, "M"),
         ]
 
     def rowCount(self, parent: Union[PySide6.QtCore.QModelIndex, PySide6.QtCore.QPersistentModelIndex] = ...) -> int:
