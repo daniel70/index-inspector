@@ -9,7 +9,7 @@ import PySide6
 import pyodbc
 
 from PySide6 import QtCore
-from PySide6.QtCore import QAbstractTableModel, SIGNAL
+from PySide6.QtCore import QAbstractTableModel, SIGNAL, QSortFilterProxyModel
 from PySide6.QtGui import Qt
 from PySide6.QtWidgets import QApplication, QDialog, QDialogButtonBox, QMainWindow, QLayout, QMessageBox
 from ui.ui_ConnectToServer import Ui_ConnectToServer
@@ -47,6 +47,11 @@ class Child:
     name: str
     age: int
     sex: str
+
+
+class FilteredDuplicateIndexes(QSortFilterProxyModel):
+    def __init__(self, parent=None):
+        super().__init__(parent)
 
 
 class DuplicateIndexes(QAbstractTableModel):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'ConnectToServeryQdnBt.ui'
+## Form generated from reading UI file 'ConnectToServerwIfXzw.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.0
 ##
@@ -24,7 +24,7 @@ class Ui_ConnectToServer(object):
     def setupUi(self, ConnectToServer):
         if not ConnectToServer.objectName():
             ConnectToServer.setObjectName(u"ConnectToServer")
-        ConnectToServer.resize(405, 265)
+        ConnectToServer.resize(415, 276)
         ConnectToServer.setModal(True)
         self.verticalLayout = QVBoxLayout(ConnectToServer)
         self.verticalLayout.setObjectName(u"verticalLayout")
@@ -165,6 +165,14 @@ class Ui_ConnectToServer(object):
 
         self.verticalLayout.addWidget(self.buttonBox)
 
+#if QT_CONFIG(shortcut)
+        self.lblServerName.setBuddy(self.cmbServerName)
+        self.lblAuthentication.setBuddy(self.cmbAuthentication)
+        self.lblPort.setBuddy(self.txtPort)
+        self.lblDatabase.setBuddy(self.txtDatabase)
+        self.lblUserName.setBuddy(self.txtUserName)
+        self.lblPassword.setBuddy(self.txtPassword)
+#endif // QT_CONFIG(shortcut)
         QWidget.setTabOrder(self.cmbServerName, self.txtDatabase)
         QWidget.setTabOrder(self.txtDatabase, self.txtPort)
         QWidget.setTabOrder(self.txtPort, self.cmbAuthentication)
@@ -181,17 +189,17 @@ class Ui_ConnectToServer(object):
     def retranslateUi(self, ConnectToServer):
         ConnectToServer.setWindowTitle(QCoreApplication.translate("ConnectToServer", u"Connect to Server", None))
         self.lblHeader.setText(QCoreApplication.translate("ConnectToServer", u"Index Inspector", None))
-        self.lblServerName.setText(QCoreApplication.translate("ConnectToServer", u"Server name:", None))
-        self.lblAuthentication.setText(QCoreApplication.translate("ConnectToServer", u"Authentication:", None))
+        self.lblServerName.setText(QCoreApplication.translate("ConnectToServer", u"&Server name:", None))
+        self.lblAuthentication.setText(QCoreApplication.translate("ConnectToServer", u"&Authentication:", None))
         self.cmbAuthentication.setItemText(0, QCoreApplication.translate("ConnectToServer", u"Windows Authentication", None))
         self.cmbAuthentication.setItemText(1, QCoreApplication.translate("ConnectToServer", u"SQL Server Authentication", None))
         self.cmbAuthentication.setItemText(2, QCoreApplication.translate("ConnectToServer", u"Azure Active Directory - Universal with MFA", None))
         self.cmbAuthentication.setItemText(3, QCoreApplication.translate("ConnectToServer", u"Azure Active Directory - Password", None))
         self.cmbAuthentication.setItemText(4, QCoreApplication.translate("ConnectToServer", u"Azure Active Directory - Integrated", None))
 
-        self.lblPort.setText(QCoreApplication.translate("ConnectToServer", u"Port:", None))
+        self.lblPort.setText(QCoreApplication.translate("ConnectToServer", u"&Port:", None))
         self.txtPort.setText(QCoreApplication.translate("ConnectToServer", u"1433", None))
-        self.lblDatabase.setText(QCoreApplication.translate("ConnectToServer", u"Database:", None))
+        self.lblDatabase.setText(QCoreApplication.translate("ConnectToServer", u"&Database:", None))
         self.lblUserName.setText(QCoreApplication.translate("ConnectToServer", u"User name:", None))
         self.lblPassword.setText(QCoreApplication.translate("ConnectToServer", u"Password:", None))
     # retranslateUi
