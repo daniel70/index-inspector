@@ -26,66 +26,95 @@
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QGroupBox" name="groupBox">
-      <property name="title">
-       <string>Sex</string>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QCheckBox" name="chkMale">
-         <property name="text">
-          <string>Male</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-         <property name="filterValue" stdset="0">
-          <string>M</string>
-         </property>
-         <property name="filterAttribute" stdset="0">
-          <string>sex</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="chkFemale">
-         <property name="text">
-          <string>Female</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-         <property name="filterValue" stdset="0">
-          <string>F</string>
-         </property>
-         <property name="filterAttribute" stdset="0">
-          <string>sex</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item>
-     <layout class="QFormLayout" name="formLayout">
-      <property name="sizeConstraint">
-       <enum>QLayout::SetMinimumSize</enum>
-      </property>
-      <item row="0" column="0">
-       <widget class="QLabel" name="lblName">
-        <property name="text">
-         <string>&amp;Name:</string>
-        </property>
-        <property name="buddy">
-         <cstring>txtName</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="txtName">
-        <property name="filterAttribute" stdset="0">
-         <string>name</string>
-        </property>
+     <layout class="QVBoxLayout" name="filterLayout">
+      <item>
+       <widget class="QWidget" name="filterWidget" native="true">
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QGroupBox" name="groupBox">
+           <property name="title">
+            <string>Filters:</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout">
+            <item row="2" column="0">
+             <widget class="QLabel" name="label">
+              <property name="text">
+               <string>Sex:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>Age:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLineEdit" name="txtName">
+              <property name="filterAttribute" stdset="0">
+               <string>name</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QLineEdit" name="lineEdit"/>
+            </item>
+            <item row="2" column="1">
+             <widget class="QGroupBox" name="groupBox_2">
+              <property name="title">
+               <string/>
+              </property>
+              <layout class="QHBoxLayout" name="horizontalLayout">
+               <item>
+                <widget class="QCheckBox" name="chkMale">
+                 <property name="text">
+                  <string>Male</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                 <property name="filterValue" stdset="0">
+                  <string>M</string>
+                 </property>
+                 <property name="filterAttribute" stdset="0">
+                  <string>sex</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QCheckBox" name="chkFemale">
+                 <property name="text">
+                  <string>Female</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                 <property name="filterValue" stdset="0">
+                  <string>F</string>
+                 </property>
+                 <property name="filterAttribute" stdset="0">
+                  <string>sex</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="lblName">
+              <property name="text">
+               <string>&amp;Name:</string>
+              </property>
+              <property name="buddy">
+               <cstring>txtName</cstring>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
      </layout>
@@ -112,6 +141,7 @@
    <addaction name="actionConnect"/>
    <addaction name="separator"/>
    <addaction name="actionRefresh"/>
+   <addaction name="actionFilter"/>
   </widget>
   <action name="actionConnect">
    <property name="icon">
@@ -142,9 +172,44 @@
     <string>Reload data</string>
    </property>
   </action>
+  <action name="actionFilter">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../resources.qrc">
+     <normaloff>:/toolbar/art/feather/filter.svg</normaloff>:/toolbar/art/feather/filter.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Filter</string>
+   </property>
+   <property name="toolTip">
+    <string>Filter the data</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="../resources.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>actionFilter</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>filterWidget</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>397</x>
+     <y>107</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

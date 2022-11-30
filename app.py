@@ -135,6 +135,8 @@ class MainWindow(QMainWindow):
         self.proxy_model.add_filter(self.ui.chkFemale)
         self.proxy_model.add_filter(self.ui.txtName)
 
+        self.ui.filterWidget.setVisible(False)
+
     def filter_changed(self):
         self.proxy_model.invalidate()
 

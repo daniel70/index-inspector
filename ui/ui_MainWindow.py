@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'MainWindowjQpZqM.ui'
+## Form generated from reading UI file 'MainWindowstOHck.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.0
 ##
@@ -16,10 +16,10 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QIcon, QImage, QKeySequence, QLinearGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
-from PySide6.QtWidgets import (QApplication, QCheckBox, QFormLayout, QGroupBox,
-    QHBoxLayout, QHeaderView, QLabel, QLayout,
-    QLineEdit, QMainWindow, QSizePolicy, QStatusBar,
-    QTableView, QToolBar, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QCheckBox, QGridLayout, QGroupBox,
+    QHBoxLayout, QHeaderView, QLabel, QLineEdit,
+    QMainWindow, QSizePolicy, QStatusBar, QTableView,
+    QToolBar, QVBoxLayout, QWidget)
 import resources_rc
 
 class Ui_MainWindow(object):
@@ -43,45 +43,79 @@ class Ui_MainWindow(object):
         icon2 = QIcon()
         icon2.addFile(u":/toolbar/art/feather/refresh-cw.svg", QSize(), QIcon.Normal, QIcon.Off)
         self.actionRefresh.setIcon(icon2)
+        self.actionFilter = QAction(MainWindow)
+        self.actionFilter.setObjectName(u"actionFilter")
+        self.actionFilter.setCheckable(True)
+        icon3 = QIcon()
+        icon3.addFile(u":/toolbar/art/feather/filter.svg", QSize(), QIcon.Normal, QIcon.Off)
+        self.actionFilter.setIcon(icon3)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.centralwidget.setStyleSheet(u"")
         self.verticalLayout = QVBoxLayout(self.centralwidget)
         self.verticalLayout.setObjectName(u"verticalLayout")
-        self.groupBox = QGroupBox(self.centralwidget)
+        self.filterLayout = QVBoxLayout()
+        self.filterLayout.setObjectName(u"filterLayout")
+        self.filterWidget = QWidget(self.centralwidget)
+        self.filterWidget.setObjectName(u"filterWidget")
+        self.verticalLayout_2 = QVBoxLayout(self.filterWidget)
+        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.groupBox = QGroupBox(self.filterWidget)
         self.groupBox.setObjectName(u"groupBox")
-        self.horizontalLayout = QHBoxLayout(self.groupBox)
+        self.gridLayout = QGridLayout(self.groupBox)
+        self.gridLayout.setObjectName(u"gridLayout")
+        self.label = QLabel(self.groupBox)
+        self.label.setObjectName(u"label")
+
+        self.gridLayout.addWidget(self.label, 2, 0, 1, 1)
+
+        self.label_2 = QLabel(self.groupBox)
+        self.label_2.setObjectName(u"label_2")
+
+        self.gridLayout.addWidget(self.label_2, 1, 0, 1, 1)
+
+        self.txtName = QLineEdit(self.groupBox)
+        self.txtName.setObjectName(u"txtName")
+
+        self.gridLayout.addWidget(self.txtName, 0, 1, 1, 1)
+
+        self.lineEdit = QLineEdit(self.groupBox)
+        self.lineEdit.setObjectName(u"lineEdit")
+
+        self.gridLayout.addWidget(self.lineEdit, 1, 1, 1, 1)
+
+        self.groupBox_2 = QGroupBox(self.groupBox)
+        self.groupBox_2.setObjectName(u"groupBox_2")
+        self.horizontalLayout = QHBoxLayout(self.groupBox_2)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.chkMale = QCheckBox(self.groupBox)
+        self.chkMale = QCheckBox(self.groupBox_2)
         self.chkMale.setObjectName(u"chkMale")
         self.chkMale.setChecked(True)
 
         self.horizontalLayout.addWidget(self.chkMale)
 
-        self.chkFemale = QCheckBox(self.groupBox)
+        self.chkFemale = QCheckBox(self.groupBox_2)
         self.chkFemale.setObjectName(u"chkFemale")
         self.chkFemale.setChecked(True)
 
         self.horizontalLayout.addWidget(self.chkFemale)
 
 
-        self.verticalLayout.addWidget(self.groupBox)
+        self.gridLayout.addWidget(self.groupBox_2, 2, 1, 1, 1)
 
-        self.formLayout = QFormLayout()
-        self.formLayout.setObjectName(u"formLayout")
-        self.formLayout.setSizeConstraint(QLayout.SetMinimumSize)
-        self.lblName = QLabel(self.centralwidget)
+        self.lblName = QLabel(self.groupBox)
         self.lblName.setObjectName(u"lblName")
 
-        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.lblName)
-
-        self.txtName = QLineEdit(self.centralwidget)
-        self.txtName.setObjectName(u"txtName")
-
-        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.txtName)
+        self.gridLayout.addWidget(self.lblName, 0, 0, 1, 1)
 
 
-        self.verticalLayout.addLayout(self.formLayout)
+        self.verticalLayout_2.addWidget(self.groupBox)
+
+
+        self.filterLayout.addWidget(self.filterWidget)
+
+
+        self.verticalLayout.addLayout(self.filterLayout)
 
         self.tableView = QTableView(self.centralwidget)
         self.tableView.setObjectName(u"tableView")
@@ -103,8 +137,10 @@ class Ui_MainWindow(object):
         self.toolBar.addAction(self.actionConnect)
         self.toolBar.addSeparator()
         self.toolBar.addAction(self.actionRefresh)
+        self.toolBar.addAction(self.actionFilter)
 
         self.retranslateUi(MainWindow)
+        self.actionFilter.toggled.connect(self.filterWidget.setVisible)
 
         QMetaObject.connectSlotsByName(MainWindow)
     # setupUi
@@ -120,7 +156,18 @@ class Ui_MainWindow(object):
 #if QT_CONFIG(tooltip)
         self.actionRefresh.setToolTip(QCoreApplication.translate("MainWindow", u"Reload data", None))
 #endif // QT_CONFIG(tooltip)
-        self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Sex", None))
+        self.actionFilter.setText(QCoreApplication.translate("MainWindow", u"Filter", None))
+#if QT_CONFIG(tooltip)
+        self.actionFilter.setToolTip(QCoreApplication.translate("MainWindow", u"Filter the data", None))
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(shortcut)
+        self.actionFilter.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+F", None))
+#endif // QT_CONFIG(shortcut)
+        self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Filters:", None))
+        self.label.setText(QCoreApplication.translate("MainWindow", u"Sex:", None))
+        self.label_2.setText(QCoreApplication.translate("MainWindow", u"Age:", None))
+        self.txtName.setProperty("filterAttribute", QCoreApplication.translate("MainWindow", u"name", None))
+        self.groupBox_2.setTitle("")
         self.chkMale.setText(QCoreApplication.translate("MainWindow", u"Male", None))
         self.chkMale.setProperty("filterValue", QCoreApplication.translate("MainWindow", u"M", None))
         self.chkMale.setProperty("filterAttribute", QCoreApplication.translate("MainWindow", u"sex", None))
@@ -128,7 +175,6 @@ class Ui_MainWindow(object):
         self.chkFemale.setProperty("filterValue", QCoreApplication.translate("MainWindow", u"F", None))
         self.chkFemale.setProperty("filterAttribute", QCoreApplication.translate("MainWindow", u"sex", None))
         self.lblName.setText(QCoreApplication.translate("MainWindow", u"&Name:", None))
-        self.txtName.setProperty("filterAttribute", QCoreApplication.translate("MainWindow", u"name", None))
         self.toolBar.setWindowTitle(QCoreApplication.translate("MainWindow", u"toolBar", None))
     # retranslateUi
 
