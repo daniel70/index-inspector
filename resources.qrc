@@ -289,6 +289,8 @@
     <file>art/feather/zoom-out.svg</file>
   </qresource>
   <qresource prefix="program">
+    <file>art/toolbar/connect.svg</file>
+    <file>art/toolbar/logo.svg</file>
     <file>art/index-inspector-no-text.svg</file>
   </qresource>
 </RCC>

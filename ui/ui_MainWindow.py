@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'MainWindowfyjFym.ui'
+## Form generated from reading UI file 'MainWindowjQpZqM.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.0
 ##
@@ -16,8 +16,9 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QIcon, QImage, QKeySequence, QLinearGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
-from PySide6.QtWidgets import (QApplication, QCheckBox, QGroupBox, QHBoxLayout,
-    QHeaderView, QMainWindow, QSizePolicy, QStatusBar,
+from PySide6.QtWidgets import (QApplication, QCheckBox, QFormLayout, QGroupBox,
+    QHBoxLayout, QHeaderView, QLabel, QLayout,
+    QLineEdit, QMainWindow, QSizePolicy, QStatusBar,
     QTableView, QToolBar, QVBoxLayout, QWidget)
 import resources_rc
 
@@ -66,6 +67,22 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.groupBox)
 
+        self.formLayout = QFormLayout()
+        self.formLayout.setObjectName(u"formLayout")
+        self.formLayout.setSizeConstraint(QLayout.SetMinimumSize)
+        self.lblName = QLabel(self.centralwidget)
+        self.lblName.setObjectName(u"lblName")
+
+        self.formLayout.setWidget(0, QFormLayout.LabelRole, self.lblName)
+
+        self.txtName = QLineEdit(self.centralwidget)
+        self.txtName.setObjectName(u"txtName")
+
+        self.formLayout.setWidget(0, QFormLayout.FieldRole, self.txtName)
+
+
+        self.verticalLayout.addLayout(self.formLayout)
+
         self.tableView = QTableView(self.centralwidget)
         self.tableView.setObjectName(u"tableView")
 
@@ -79,6 +96,9 @@ class Ui_MainWindow(object):
         self.toolBar.setObjectName(u"toolBar")
         self.toolBar.setMovable(False)
         MainWindow.addToolBar(Qt.TopToolBarArea, self.toolBar)
+#if QT_CONFIG(shortcut)
+        self.lblName.setBuddy(self.txtName)
+#endif // QT_CONFIG(shortcut)
 
         self.toolBar.addAction(self.actionConnect)
         self.toolBar.addSeparator()
@@ -102,7 +122,13 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(tooltip)
         self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Sex", None))
         self.chkMale.setText(QCoreApplication.translate("MainWindow", u"Male", None))
+        self.chkMale.setProperty("filterValue", QCoreApplication.translate("MainWindow", u"M", None))
+        self.chkMale.setProperty("filterAttribute", QCoreApplication.translate("MainWindow", u"sex", None))
         self.chkFemale.setText(QCoreApplication.translate("MainWindow", u"Female", None))
+        self.chkFemale.setProperty("filterValue", QCoreApplication.translate("MainWindow", u"F", None))
+        self.chkFemale.setProperty("filterAttribute", QCoreApplication.translate("MainWindow", u"sex", None))
+        self.lblName.setText(QCoreApplication.translate("MainWindow", u"&Name:", None))
+        self.txtName.setProperty("filterAttribute", QCoreApplication.translate("MainWindow", u"name", None))
         self.toolBar.setWindowTitle(QCoreApplication.translate("MainWindow", u"toolBar", None))
     # retranslateUi
 

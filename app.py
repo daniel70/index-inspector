@@ -11,7 +11,8 @@ import pyodbc
 from PySide6 import QtCore
 from PySide6.QtCore import QAbstractTableModel, SIGNAL, QSortFilterProxyModel
 from PySide6.QtGui import Qt
-from PySide6.QtWidgets import QApplication, QDialog, QDialogButtonBox, QMainWindow, QLayout, QMessageBox
+from PySide6.QtWidgets import QApplication, QDialog, QDialogButtonBox, QMainWindow, QLayout, QMessageBox, QCheckBox, \
+    QLineEdit
 from ui.ui_ConnectToServer import Ui_ConnectToServer
 from ui.ui_MainWindow import Ui_MainWindow
 # to reload the resource file run: pyside6-rcc.exe .\resources.qrc -o resources_rc.py
@@ -49,11 +50,6 @@ class Child:
     sex: str
 
 
-class FilteredDuplicateIndexes(QSortFilterProxyModel):
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-
 class DuplicateIndexes(QAbstractTableModel):
     def __init__(self, parent):
         super().__init__(parent)
@@ -89,15 +85,56 @@ class DuplicateIndexes(QAbstractTableModel):
         self.emit(SIGNAL("layoutChanged()"))
 
 
+class DuplicateSortFilterProxyModel(QSortFilterProxyModel):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.filters = []
+
+    def add_filter(self, QWidget):
+        self.filters.append(QWidget)
+
+    def filterAcceptsRow(self, source_row: int, source_parent: Union[PySide6.QtCore.QModelIndex, PySide6.QtCore.QPersistentModelIndex]) -> bool:
+        if not self.filters:
+            return True
+        model = self.sourceModel()
+        include = True
+        for widget in self.filters:
+            if isinstance(widget, QCheckBox):
+                if widget.checkState() == Qt.CheckState.Unchecked:
+                    if getattr(model.rows[source_row], widget.property('filterAttribute')) == widget.property('filterValue'):
+                        include = False
+            elif isinstance(widget, QLineEdit):
+                if widget.text():
+                    if not widget.text() in getattr(model.rows[source_row], widget.property('filterAttribute')):
+                        include = False
+        return include
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.actionConnect.triggered.connect(self.connect_clicked)
-        duplicate_indexes = DuplicateIndexes(self)
-        self.ui.tableView.setModel(duplicate_indexes)
+        model = DuplicateIndexes(self)
+        self.proxy_model = DuplicateSortFilterProxyModel(self)
+        self.proxy_model.setSourceModel(model)
+        self.ui.tableView.setModel(self.proxy_model)
         self.ui.tableView.setSortingEnabled(True)
+        self.proxy_model.setFilterFixedString("F")
+        self.proxy_model.setFilterKeyColumn(2)
+
+        self.ui.chkMale.toggled.connect(self.filter_changed)
+        self.ui.chkFemale.toggled.connect(self.filter_changed)
+        self.ui.txtName.textChanged.connect(self.filter_changed)
+
+        # add filters
+        self.proxy_model.add_filter(self.ui.chkMale)
+        self.proxy_model.add_filter(self.ui.chkFemale)
+        self.proxy_model.add_filter(self.ui.txtName)
+
+    def filter_changed(self):
+        self.proxy_model.invalidate()
 
     @QtCore.Slot()
     def connect_clicked(self):
