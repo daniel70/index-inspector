@@ -58,6 +58,8 @@ class DuplicateIndexes(QAbstractTableModel):
             Child("Sofie", 20, "F"),
             Child("Rindert", 18, "M"),
             Child("Geerten", 16, "M"),
+            Child("Daniel", 52, "M"),
+            Child("Jose", 51, "F"),
         ]
 
     def rowCount(self, parent: Union[PySide6.QtCore.QModelIndex, PySide6.QtCore.QPersistentModelIndex] = ...) -> int:
