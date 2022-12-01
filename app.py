@@ -117,7 +117,6 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        self.ui.actionConnect.triggered.connect(self.connect_clicked)
         model = DuplicateIndexes(self)
         self.proxy_model = DuplicateSortFilterProxyModel(self)
         self.proxy_model.setSourceModel(model)
@@ -126,6 +125,7 @@ class MainWindow(QMainWindow):
         self.proxy_model.setFilterFixedString("F")
         self.proxy_model.setFilterKeyColumn(2)
 
+        self.ui.actionConnect.triggered.connect(self.connect_clicked)
         self.ui.chkMale.toggled.connect(self.filter_changed)
         self.ui.chkFemale.toggled.connect(self.filter_changed)
         self.ui.txtName.textChanged.connect(self.filter_changed)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'MainWindowstOHck.ui'
+## Form generated from reading UI file 'MainWindowrsyyLZ.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.4.0
 ##
@@ -16,10 +16,11 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QIcon, QImage, QKeySequence, QLinearGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
-from PySide6.QtWidgets import (QApplication, QCheckBox, QGridLayout, QGroupBox,
-    QHBoxLayout, QHeaderView, QLabel, QLineEdit,
-    QMainWindow, QSizePolicy, QStatusBar, QTableView,
-    QToolBar, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QGridLayout,
+    QGroupBox, QHBoxLayout, QHeaderView, QLabel,
+    QLineEdit, QMainWindow, QSizePolicy, QSpacerItem,
+    QStatusBar, QTableView, QToolBar, QVBoxLayout,
+    QWidget)
 import resources_rc
 
 class Ui_MainWindow(object):
@@ -64,25 +65,55 @@ class Ui_MainWindow(object):
         self.groupBox.setObjectName(u"groupBox")
         self.gridLayout = QGridLayout(self.groupBox)
         self.gridLayout.setObjectName(u"gridLayout")
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+
+        self.gridLayout.addItem(self.horizontalSpacer, 1, 5, 1, 1)
+
+        self.comboBox = QComboBox(self.groupBox)
+        self.comboBox.addItem("")
+        self.comboBox.addItem("")
+        self.comboBox.setObjectName(u"comboBox")
+
+        self.gridLayout.addWidget(self.comboBox, 1, 1, 1, 1)
+
+        self.label_3 = QLabel(self.groupBox)
+        self.label_3.setObjectName(u"label_3")
+
+        self.gridLayout.addWidget(self.label_3, 1, 2, 1, 1)
+
         self.label = QLabel(self.groupBox)
         self.label.setObjectName(u"label")
 
         self.gridLayout.addWidget(self.label, 2, 0, 1, 1)
+
+        self.lblName = QLabel(self.groupBox)
+        self.lblName.setObjectName(u"lblName")
+
+        self.gridLayout.addWidget(self.lblName, 0, 0, 1, 1)
 
         self.label_2 = QLabel(self.groupBox)
         self.label_2.setObjectName(u"label_2")
 
         self.gridLayout.addWidget(self.label_2, 1, 0, 1, 1)
 
-        self.txtName = QLineEdit(self.groupBox)
-        self.txtName.setObjectName(u"txtName")
-
-        self.gridLayout.addWidget(self.txtName, 0, 1, 1, 1)
-
         self.lineEdit = QLineEdit(self.groupBox)
         self.lineEdit.setObjectName(u"lineEdit")
+        self.lineEdit.setInputMask(u"d000000000")
+        self.lineEdit.setMaxLength(10)
+        self.lineEdit.setClearButtonEnabled(True)
 
-        self.gridLayout.addWidget(self.lineEdit, 1, 1, 1, 1)
+        self.gridLayout.addWidget(self.lineEdit, 1, 3, 1, 1)
+
+        self.label_4 = QLabel(self.groupBox)
+        self.label_4.setObjectName(u"label_4")
+
+        self.gridLayout.addWidget(self.label_4, 1, 4, 1, 1)
+
+        self.txtName = QLineEdit(self.groupBox)
+        self.txtName.setObjectName(u"txtName")
+        self.txtName.setClearButtonEnabled(True)
+
+        self.gridLayout.addWidget(self.txtName, 0, 1, 1, 4)
 
         self.groupBox_2 = QGroupBox(self.groupBox)
         self.groupBox_2.setObjectName(u"groupBox_2")
@@ -101,12 +132,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout.addWidget(self.chkFemale)
 
 
-        self.gridLayout.addWidget(self.groupBox_2, 2, 1, 1, 1)
-
-        self.lblName = QLabel(self.groupBox)
-        self.lblName.setObjectName(u"lblName")
-
-        self.gridLayout.addWidget(self.lblName, 0, 0, 1, 1)
+        self.gridLayout.addWidget(self.groupBox_2, 2, 3, 1, 2)
 
 
         self.verticalLayout_2.addWidget(self.groupBox)
@@ -164,8 +190,14 @@ class Ui_MainWindow(object):
         self.actionFilter.setShortcut(QCoreApplication.translate("MainWindow", u"Ctrl+F", None))
 #endif // QT_CONFIG(shortcut)
         self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"Filters:", None))
+        self.comboBox.setItemText(0, QCoreApplication.translate("MainWindow", u"more", None))
+        self.comboBox.setItemText(1, QCoreApplication.translate("MainWindow", u"less", None))
+
+        self.label_3.setText(QCoreApplication.translate("MainWindow", u"than", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"Sex:", None))
-        self.label_2.setText(QCoreApplication.translate("MainWindow", u"Age:", None))
+        self.lblName.setText(QCoreApplication.translate("MainWindow", u"&Name:", None))
+        self.label_2.setText(QCoreApplication.translate("MainWindow", u"Age is ", None))
+        self.label_4.setText(QCoreApplication.translate("MainWindow", u"years.", None))
         self.txtName.setProperty("filterAttribute", QCoreApplication.translate("MainWindow", u"name", None))
         self.groupBox_2.setTitle("")
         self.chkMale.setText(QCoreApplication.translate("MainWindow", u"Male", None))
@@ -174,7 +206,6 @@ class Ui_MainWindow(object):
         self.chkFemale.setText(QCoreApplication.translate("MainWindow", u"Female", None))
         self.chkFemale.setProperty("filterValue", QCoreApplication.translate("MainWindow", u"F", None))
         self.chkFemale.setProperty("filterAttribute", QCoreApplication.translate("MainWindow", u"sex", None))
-        self.lblName.setText(QCoreApplication.translate("MainWindow", u"&Name:", None))
         self.toolBar.setWindowTitle(QCoreApplication.translate("MainWindow", u"toolBar", None))
     # retranslateUi
 
