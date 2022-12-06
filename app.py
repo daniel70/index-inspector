@@ -1,7 +1,7 @@
 import operator
 import os
 import sys
-from dataclasses import dataclass, fields
+from dataclasses import dataclass, fields, astuple
 from time import sleep
 from typing import Union, Any
 
@@ -21,29 +21,29 @@ from ui.ui_MainWindow import Ui_MainWindow
 #test class
 @dataclass()
 class Child:
-    def __getitem__(self, item):
-        """
-        QT model/views need data objects that are subscriptable, like string, list, dict
-        The properties of dataclasses are not, however, we can make them behave like one.
-        The easiest way is by hardcoding the values, it can also be done programmatically, like so:
-
-        myfields = {i: fld.name for i, fld in enumerate(fields(self.__class__))}
-        return self.__getattribute__(myfields[item])
-
-        However:
-        Explicit is better than implicit.
-        Simple is better than complex.
-        so I put it here, as the first function, so it won't be overlooked when new fields are added to this class.
-        """
-        match item:
-            case 0:
-                return self.name
-            case 1:
-                return self.age
-            case 2:
-                return self.sex
-            case _:
-                raise IndexError()
+    # def __getitem__(self, item):
+    #     """
+    #     QT model/views need data objects that are subscriptable, like string, list, dict
+    #     The properties of dataclasses are not, however, we can make them behave like one.
+    #     The easiest way is by hardcoding the values, it can also be done programmatically, like so:
+    #
+    #     myfields = {i: fld.name for i, fld in enumerate(fields(self.__class__))}
+    #     return self.__getattribute__(myfields[item])
+    #
+    #     However:
+    #     Explicit is better than implicit.
+    #     Simple is better than complex.
+    #     so I put it here, as the first function, so it won't be overlooked when new fields are added to this class.
+    #     """
+    #     match item:
+    #         case 0:
+    #             return self.name
+    #         case 1:
+    #             return self.age
+    #         case 2:
+    #             return self.sex
+    #         case _:
+    #             raise IndexError()
 
     name: str
     age: int
@@ -69,11 +69,15 @@ class DuplicateIndexes(QAbstractTableModel):
         return len(self.header)
 
     def data(self, index: Union[PySide6.QtCore.QModelIndex, PySide6.QtCore.QPersistentModelIndex], role: int = ...) -> Any:
+        """
+        https://stackoverflow.com/questions/58702048/how-can-i-populate-a-qtableview-from-a-list-of-dataclass-instances
+        except, don't use QVariant anymore
+        """
         if not index.isValid():
             return None
         elif role != Qt.DisplayRole:
             return None
-        return self.rows[index.row()][index.column()]
+        return astuple(self.rows[index.row()])[index.column()]
 
     def headerData(self, section: int, orientation: PySide6.QtCore.Qt.Orientation, role: int = ...) -> Any:
         if orientation == Qt.Horizontal and role == Qt.DisplayRole:
